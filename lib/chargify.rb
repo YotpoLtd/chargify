@@ -1,6 +1,6 @@
 require 'hashie'
 require 'httparty'
-require 'json'
+require 'oj'
 require 'active_support/core_ext/hash'
 
 Hash.send :include, Hashie::HashExtensions
@@ -15,4 +15,5 @@ module Chargify
   autoload :ProductFamily,  'chargify/product_family'
   autoload :Subscription,   'chargify/subscription'
   autoload :Transaction,    'chargify/transaction'
+  autoload :Call,           'chargify/call'
 end

@@ -9,9 +9,9 @@ begin
     gem.homepage = "http://github.com/jsmestad/chargify"
     gem.authors = ["Wynn Netherland", "Justin Smestad"]
 
-    gem.add_dependency('httparty', '~> 0.6.1')
-    gem.add_dependency('hashie', '~> 0.1.8')
-    gem.add_dependency('json')
+    gem.add_dependency('httparty', '>= 0.7.6')
+    gem.add_dependency('hashie', '>= 0.1.8')
+    gem.add_dependency('oj')
     gem.add_dependency('activesupport', '>= 3.0.0')
   end
   Jeweler::GemcutterTasks.new

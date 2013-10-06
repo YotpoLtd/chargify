@@ -12,8 +12,10 @@ module Chargify
         {
           :logger     => defined?(Rails.logger) ? Rails.logger : Logger.new(STDOUT),
           :debug      => false,
-          :subdomain  => "your-site-name",
-          :api_key    => "your-api-key"
+          :subdomain  => 'your-site-name',
+          :api_key    => 'your-api-key',
+          :direct_api_id => 'chargify-direct-api-id',
+          :direct_api_password => 'chargify-direct-password'
         }
       end
 

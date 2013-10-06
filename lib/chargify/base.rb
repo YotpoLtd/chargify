@@ -8,16 +8,20 @@ module Chargify
 
     class << self
 
-      def api_request(type, path, options={})
-        self.base_uri "https://#{Chargify::Config.subdomain}.chargify.com"
+      def api_request(type, path, options={}, api_version = 1)
+        if api_version == 2
+          self.base_uri('https://api.chargify.com/api/v2')
+          options[:basic_auth] = {:username => Chargify::Config.direct_api_id, :password => Chargify::Config.direct_api_password}
+        else
+          self.base_uri("https://#{Chargify::Config.subdomain}.chargify.com")
+          options[:basic_auth] = {:username => Chargify::Config.api_key, :password => 'x'}
+        end
 
         # This is to allow bang methods
         raise_errors = options.delete(:raise_errors)
         
         # Build options hash for HTTParty
         options[:body] = options[:body].to_json if options[:body]
-        options[:basic_auth] = {:username => Chargify::Config.api_key, :password => 'x'}
-    
         Chargify::Config.logger.debug("[CHARGIFY] Sending #{self.base_uri}#{path} a payload of #{options[:body]}") if Chargify::Config.debug
 
         begin
@@ -54,6 +58,8 @@ module Chargify
     def initialize(options={})
       Chargify::Config.api_key = options[:api_key] if options[:api_key]
       Chargify::Config.subdomain = options[:subdomain] if options[:subdomain]
+      Chargify::Config.direct_api_id = options[:direct_api_id] if options[:direct_api_id]
+      Chargify::Config.direct_api_password = options[:direct_api_password] if options[:direct_api_password]
 
       @errors = []
       self.attributes = attrs

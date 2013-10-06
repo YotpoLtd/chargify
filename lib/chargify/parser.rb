@@ -3,8 +3,8 @@ module Chargify
 
     def parse
       begin
-        Crack::JSON.parse(body)
-      rescue => e
+        ::Oj.load(body, mode: :compat) unless body.strip.empty?
+      rescue Oj::ParseError => e
         raise(Chargify::Error::UnexpectedResponse.new(e.message), body)
       end
     end
