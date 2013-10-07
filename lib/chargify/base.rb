@@ -30,20 +30,24 @@ module Chargify
           raise(Chargify::Error::ConnectionFailed.new, "Failed to connect to payment gateway.")
         end
 
+        response_code = api_version == 1 ? response.code.to_i : response['call']['response']['result']['status_code']
+        if response_code != 200
+          error_message = api_version == 1 ? response.body : response['call']['response']['result']['errors']
+        end
 
-        case response.code.to_i
+        case response_code.to_i
         when 401
-          raise(Chargify::Error::AccessDenied.new(response), response.body)
+          raise(Chargify::Error::AccessDenied.new(response), error_message)
         when 403
-          raise(Chargify::Error::Forbidden.new(response), response.body)
+          raise(Chargify::Error::Forbidden.new(response), error_message)
         when 422
-          raise(Chargify::Error::BadRequest.new(response), response.body)
+          raise(Chargify::Error::BadRequest.new(response), error_message)
         when 404
-          raise(Chargify::Error::NotFound.new(response), response.body)
+          raise(Chargify::Error::NotFound.new(response), error_message)
         when 500
-          raise(Chargify::Error::ServerError.new(response), response.body)
+          raise(Chargify::Error::ServerError.new(response), error_message)
         when 504
-          raise(Chargify::Error::GatewayTimeout.new(response), response.body)
+          raise(Chargify::Error::GatewayTimeout.new(response), error_message)
         end
         
         Chargify::Config.logger.debug("[CHARGIFY] Response from #{self.base_uri}#{path} was #{response.code}: #{response.body}") if Chargify::Config.debug

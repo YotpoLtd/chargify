@@ -5,7 +5,7 @@ module Chargify
       def find!(id)
         request = api_request(:get, "/calls/#{id}", {}, 2)
         response = Hashie::Mash.new(request)
-        response
+        response.call.response
       end
 
       def find(id)
