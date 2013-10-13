@@ -30,12 +30,16 @@ module Chargify
           raise(Chargify::Error::ConnectionFailed.new, "Failed to connect to payment gateway.")
         end
 
-        response_code = api_version == 1 ? response.code.to_i : response['call']['response']['result']['status_code']
+        response_code = response.code.to_i
         if response_code != 200
-          error_message = api_version == 1 ? response.body : response['call']['response']['result']['errors']
+          if api_version == 1
+            error_message = response.body
+          else
+            error_message = response['result']['errors'].to_s
+          end
         end
 
-        case response_code.to_i
+        case response_code
         when 401
           raise(Chargify::Error::AccessDenied.new(response), error_message)
         when 403
@@ -46,6 +50,8 @@ module Chargify
           raise(Chargify::Error::NotFound.new(response), error_message)
         when 500
           raise(Chargify::Error::ServerError.new(response), error_message)
+        when 501
+          raise(Chargify::Error::NotImplemented.new(response), error_message)
         when 504
           raise(Chargify::Error::GatewayTimeout.new(response), error_message)
         end

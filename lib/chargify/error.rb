@@ -14,6 +14,7 @@ module Chargify
     class BadRequest          < Base; end # 422 errors
     class NotFound            < Base; end # 404 errors
     class ServerError         < Base; end # 500 errors
+    class NotImplemented      < Base; end # 501 errors
     class GatewayTimeout      < Base; end # 504 errors
     class ConnectionFailed    < Base; end
     
